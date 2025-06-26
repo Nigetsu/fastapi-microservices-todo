@@ -12,7 +12,7 @@ RABBITMQ_URL = settings.RABBITMQ_URL
 
 
 async def get_task_stats(user_id: UUID, timeout: float = 5.0) -> dict:
-    print("getting task stats")
+    print("🚀 Getting task stats")
     try:
         async with await aio_pika.connect_robust(RABBITMQ_URL) as connection:
             async with connection.channel() as channel:
@@ -60,7 +60,7 @@ async def get_task_stats(user_id: UUID, timeout: float = 5.0) -> dict:
 
 
 async def publish_user_registered_event(user_id: str, email: str):
-    print("Publishing user registered event")
+    print("🚀 Publishing user registered event")
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     async with connection:
         channel = await connection.channel()
@@ -83,7 +83,7 @@ async def publish_user_registered_event(user_id: str, email: str):
 
 
 async def user_info_worker():
-    print("Starting user info worker")
+    print("🚀 Starting user info worker")
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     async with connection:
         channel = await connection.channel()

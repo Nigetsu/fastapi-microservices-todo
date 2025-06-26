@@ -15,7 +15,7 @@ RABBITMQ_URL = settings.RABBITMQ_URL
 
 
 async def task_worker():
-    print("task_worker started and listening")
+    print("✅ task_worker started and listening")
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     async with connection:
         channel = await connection.channel()
@@ -44,7 +44,7 @@ async def task_worker():
                             "observer_tasks": observer_tasks,
                         }
 
-                        print(f"↩ Replying to: {message.reply_to}")
+                        print(f"↩️ Replying to: {message.reply_to}")
                         print(f"🔗 Correlation ID: {message.correlation_id}")
 
                         await channel.default_exchange.publish(
@@ -57,11 +57,11 @@ async def task_worker():
                         )
 
                     except Exception as e:
-                        print(f"Error processing task stats: {e}")
+                        print(f"❌ Error processing task stats: {e}")
 
 
 async def get_user_info(user_id: UUID, timeout: float = 5.0) -> dict | None:
-    print("get_user_info started")
+    print("✅ get_user_info started")
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
     async with connection:
         channel = await connection.channel()
