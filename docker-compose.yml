@@ -1,0 +1,92 @@
+services:
+  postgres-auth:
+    image: postgres:latest
+    container_name: postgres-auth_new
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: auth_service_new
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_auth_data_new:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U nigetsu -d auth_service_new" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [ backend ]
+
+  postgres-task:
+    image: postgres:latest
+    container_name: postgres-task_new
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: task_service_new
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg_task_data_new:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U nigetsu -d task_service_new" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [ backend ]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [ backend ]
+
+
+  auth-service:
+    build: ./auth_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks: [ backend ]
+
+  task-service:
+    build: ./task_service
+    ports:
+      - "8001:8000"
+    depends_on:
+      postgres-task:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks: [ backend ]
+
+  email-service:
+    build: ./email_service
+    ports:
+      - "8002:8000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks: [ backend ]
+
+volumes:
+  pg_auth_data_new:
+  pg_task_data_new:
+
+networks:
+  backend:
+    driver: bridge
+
