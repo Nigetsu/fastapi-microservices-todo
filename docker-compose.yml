@@ -1,7 +1,7 @@
 services:
   postgres-auth:
     image: postgres:latest
-    container_name: postgres-auth_new
+    container_name: postgres-auth-new
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -19,7 +19,7 @@ services:
 
   postgres-task:
     image: postgres:latest
-    container_name: postgres-task_new
+    container_name: postgres-task-new
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
