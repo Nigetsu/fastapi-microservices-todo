@@ -22,6 +22,7 @@ class TaskCreateRequest(BaseModel):
     title: str
     status: TaskStatus
     author_id: UUID4
+    assignee_id: UUID4 | None = None
 
     @field_validator('title')
     def validate_title_length(cls, v):

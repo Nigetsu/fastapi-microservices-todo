@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from pydantic import UUID4
 
@@ -21,9 +22,19 @@ class TaskService(BaseService):
     @transaction_mode
     async def create_task(self, task: TaskCreateRequest) -> TaskDB:
         create_task: Task = await self.uow.task.add_one_and_get_obj(**task.model_dump())
-        await self.uow.task.add_executor(create_task.id, task.author_id)
-        await self.uow.task.add_watcher(create_task.id, task.author_id)
+
+        await self._add_watcher(create_task.id, task.author_id)
+
+        if task.assignee_id:
+            await self._add_executor(create_task.id, task.assignee_id)
+
         return create_task.to_schema()
+
+    async def _add_executor(self, task_id: UUID, user_id: UUID) -> None:
+        await self.uow.task.add_executor(task_id, user_id)
+
+    async def _add_watcher(self, task_id: UUID, user_id: UUID) -> None:
+        await self.uow.task.add_watcher(task_id, user_id)
 
     @transaction_mode
     async def get_task_by_id(self, task_id: UUID4) -> TaskDB:
