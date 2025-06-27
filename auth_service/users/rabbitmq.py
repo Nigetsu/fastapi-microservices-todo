@@ -6,9 +6,10 @@ import json
 
 from fastapi import HTTPException
 from users.crud import UserDAO
-from core.config import settings
 
-RABBITMQ_URL = settings.RABBITMQ_URL
+from core.config import get_rb_url
+
+RABBITMQ_URL = get_rb_url()
 
 
 async def get_task_stats(user_id: UUID, timeout: float = 5.0) -> dict:

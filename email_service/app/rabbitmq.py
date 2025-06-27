@@ -1,8 +1,10 @@
 import aio_pika
 import json
-from app.config import settings
 
-RABBITMQ_URL = settings.RABBITMQ_URL
+from app.config import get_rb_url
+
+RABBITMQ_URL = get_rb_url()
+
 
 async def email_worker():
     print("🚀 Email worker started and listening")

@@ -29,7 +29,7 @@ async def create_task(
     user_info = await get_user_info(task.author_id)
     if not user_info:
         raise HTTPException(status_code=404, detail="Author not found")
-    
+
     created_task: TaskDB | None = await service.create_task(task)
     return TaskCreateResponse(payload=created_task.id)
 
@@ -62,7 +62,7 @@ async def get_task_by_id(
     path='/{task_id}',
     status_code=HTTP_200_OK,
 )
-async def update_user(
+async def update_task(
         task_id: UUID4,
         task: TaskUpdateRequest,
         service: TaskService = Depends(),

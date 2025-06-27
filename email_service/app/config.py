@@ -4,6 +4,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
+
 class Settings(BaseSettings):
     RABBITMQ_URL: str
     model_config = SettingsConfigDict(
@@ -12,3 +13,7 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_rb_url() -> str:
+    return settings.RABBITMQ_URL

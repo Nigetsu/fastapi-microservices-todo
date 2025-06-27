@@ -9,9 +9,10 @@ from fastapi import HTTPException
 from src.api.v1.services import TaskService
 
 from src.utils.unit_of_work import UnitOfWork
-from src.config import settings
 
-RABBITMQ_URL = settings.RABBITMQ_URL
+from src.config import get_rb_url
+
+RABBITMQ_URL = get_rb_url()
 
 
 async def task_worker():
