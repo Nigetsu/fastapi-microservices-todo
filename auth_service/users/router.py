@@ -82,5 +82,5 @@ async def auth_user_check_self_info(
         "email": user.email,
         "logged_in_at": iat,
         "executor_tasks": task_stats["executor_tasks"],
-        "observer_tasks": task_stats["observer_tasks"]
+        "watcher_tasks": task_stats["watcher_tasks"]
     }

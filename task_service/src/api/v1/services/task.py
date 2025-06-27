@@ -62,5 +62,5 @@ class TaskService(BaseService):
         return await self.uow.task.count_executor_tasks(user_id)
 
     @transaction_mode
-    async def get_observer_tasks_count(self, user_id: UUID4) -> int:
-        return await self.uow.task.count_observer_tasks(user_id)
+    async def get_watcher_tasks_count(self, user_id: UUID4) -> int:
+        return await self.uow.task.count_watcher_tasks(user_id)

@@ -38,11 +38,11 @@ async def task_worker():
                         service = TaskService(uow=uow)
 
                         executor_tasks = await service.get_executor_tasks_count(user_id)
-                        observer_tasks = await service.get_observer_tasks_count(user_id)
+                        watcher_tasks = await service.get_watcher_tasks_count(user_id)
 
                         response = {
                             "executor_tasks": executor_tasks,
-                            "observer_tasks": observer_tasks,
+                            "watcher_tasks": watcher_tasks,
                         }
 
                         print(f"↩️ Replying to: {message.reply_to}")

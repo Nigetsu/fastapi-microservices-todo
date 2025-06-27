@@ -31,7 +31,7 @@ class TaskRepository(SqlAlchemyRepository[Task]):
         result = await self._session.scalar(res)
         return result or 0
 
-    async def count_observer_tasks(self, user_id: UUID) -> int:
+    async def count_watcher_tasks(self, user_id: UUID) -> int:
         res = select(func.count()).select_from(TaskWatcher).where(TaskWatcher.user_id == user_id)
         result = await self._session.scalar(res)
         return result or 0
