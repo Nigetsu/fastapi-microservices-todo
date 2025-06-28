@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from src.api import router
-from src.utils.rabbitmq import task_worker
+from src.rabbitmq import task_worker
 
 
 @asynccontextmanager

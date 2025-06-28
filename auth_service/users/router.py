@@ -14,7 +14,7 @@ from users.dependencies import (
     get_current_auth_user,
     get_current_token_payload,
 )
-from users.rabbitmq import (
+from rabbitmq import (
     get_task_stats,
     publish_user_registered_event
 )

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from users.rabbitmq import user_info_worker
+from rabbitmq import user_info_worker
 from users.router import router as jwt_auth_router
 
 

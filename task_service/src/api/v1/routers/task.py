@@ -13,7 +13,7 @@ from src.schemas.task import (
     TaskUpdateRequest,
 )
 
-from src.utils.rabbitmq import get_user_info
+from src.rabbitmq import get_user_info
 
 router = APIRouter(prefix='/task')
 
