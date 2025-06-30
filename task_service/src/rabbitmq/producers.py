@@ -18,7 +18,10 @@ async def get_user_info(user_id: UUID, timeout: float = 5.0) -> dict | None:
     async with connection:
         channel = await connection.channel()
 
-        callback_queue = await channel.declare_queue(exclusive=True, auto_delete=True)
+        callback_queue = await channel.declare_queue(
+            exclusive=True,
+            auto_delete=True
+        )
 
         correlation_id = str(uuid.uuid4())
         future = asyncio.get_event_loop().create_future()
@@ -44,7 +47,10 @@ async def get_user_info(user_id: UUID, timeout: float = 5.0) -> dict | None:
         try:
             response = await asyncio.wait_for(future, timeout)
         except asyncio.TimeoutError:
-            raise HTTPException(status_code=504, detail="User service did not respond in time")
+            raise HTTPException(
+                status_code=504,
+                detail="User service did not respond in time"
+            )
 
         if response.get("error"):
             return None

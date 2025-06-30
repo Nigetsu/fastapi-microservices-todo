@@ -4,6 +4,7 @@ from uuid import UUID
 import asyncio
 import json
 
+from aio_pika import ExchangeType
 from fastapi import HTTPException
 
 from core.config import get_rb_url
@@ -13,25 +14,36 @@ RABBITMQ_URL = get_rb_url()
 
 async def publish_user_registered_event(user_id: str, email: str):
     print("🚀 Publishing user registered event")
-    connection = await aio_pika.connect_robust(RABBITMQ_URL)
-    async with connection:
-        channel = await connection.channel()
+    try:
+        connection = await aio_pika.connect_robust(RABBITMQ_URL)
+        async with connection:
+            channel = await connection.channel()
+            exchange = await channel.declare_exchange(
+                "notifications",
+                ExchangeType.TOPIC,
+                durable=True
+            )
 
-        message = {
-            "type": "user_registered",
-            "data": {
-                "user_id": user_id,
-                "email": email
+            message = {
+                "type": "user_registered",
+                "data": {
+                    "user_id": user_id,
+                    "email": email
+                }
             }
-        }
 
-        await channel.default_exchange.publish(
-            aio_pika.Message(
-                body=json.dumps(message).encode(),
-                delivery_mode=aio_pika.DeliveryMode.PERSISTENT
-            ),
-            routing_key="email.notifications"
-        )
+            await exchange.publish(
+                aio_pika.Message(
+                    body=json.dumps(message).encode(),
+                    delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                ),
+                routing_key="email.notifications"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Failed to publish user registration event: {str(e)}"
+        ) from e
 
 
 async def get_task_stats(user_id: UUID, timeout: float = 5.0) -> dict:
@@ -79,4 +91,4 @@ async def get_task_stats(user_id: UUID, timeout: float = 5.0) -> dict:
         raise HTTPException(
             status_code=503,
             detail=f"RabbitMQ connection error: {str(e)}"
-        )
+        ) from e
